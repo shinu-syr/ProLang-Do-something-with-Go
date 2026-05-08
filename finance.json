@@ -1,0 +1,21 @@
+{
+  "transactions": [
+    {
+      "id": 1,
+      "description": "weekly allowance",
+      "amount": 2000,
+      "type": "income",
+      "category": "Allowance",
+      "date": "2026-05-08T17:15:17.4419673+08:00"
+    },
+    {
+      "id": 2,
+      "description": "lunch",
+      "amount": 100,
+      "type": "expense",
+      "category": "Food",
+      "date": "2026-05-08T17:15:34.2987856+08:00"
+    }
+  ],
+  "next_id": 3
+}
