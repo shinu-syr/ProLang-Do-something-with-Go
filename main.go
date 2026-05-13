@@ -13,14 +13,12 @@ import (
 	"time"
 )
 
-// --- Data Models ---
-
 type Transaction struct {
 	ID          int       `json:"id"`
 	Description string    `json:"description"`
 	Amount      float64   `json:"amount"`
-	Type        string    `json:"type"`     // "income" or "expense"
-	Category    string    `json:"category"` // e.g. "Food", "Salary", "Rent", "Transport", "Other"
+	Type        string    `json:"type"`
+	Category    string    `json:"category"`
 	Date        time.Time `json:"date"`
 }
 
@@ -42,7 +40,7 @@ type PageData struct {
 	Filter       string
 }
 
-// --- Persistence ---
+//Persistence
 
 const dbFile = "finance.json"
 
@@ -74,7 +72,7 @@ func (s *Store) Load() error {
 	return json.Unmarshal(data, s)
 }
 
-// --- Concurrency Requirements ---
+
 
 func (s *Store) GetSummary() Summary {
 	s.mu.Lock()
@@ -113,7 +111,7 @@ func (s *Store) GetSummary() Summary {
 	}
 }
 
-// --- Handlers ---
+//Handlers
 
 var (
 	store = &Store{}
@@ -135,7 +133,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 			filtered = append(filtered, t)
 		}
 	}
-	// Sort by date newest first
+
 	sort.Slice(filtered, func(i, j int) bool {
 		return filtered[i].Date.After(filtered[j].Date)
 	})
@@ -223,24 +221,24 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// Initialize store
+
 	if err := store.Load(); err != nil {
 		log.Fatalf("Error loading store: %v", err)
 	}
 
-	// Parse templates
+
 	var err error
 	tmpl, err = template.ParseFiles("templates/index.html")
 	if err != nil {
 		log.Fatalf("Error parsing template: %v", err)
 	}
 
-	// Routes
+
 	http.HandleFunc("/", handleIndex)
 	http.HandleFunc("/add", handleAdd)
 	http.HandleFunc("/delete", handleDelete)
 
-	// Serve static files
+
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
